@@ -37,7 +37,7 @@ func (r *UsersRepository) PatchUser(ctx context.Context, id int, user domain.Use
 	)
 	if err != nil{
 		if errors.Is(err, core_postgres_pool.ErrNoRows){
-			return domain.User{}, fmt.Errorf("user with id='%d' concurrently accessedч	: %w", id, core_errors.ErrNotFound)
+			return domain.User{}, fmt.Errorf("user with id='%d' concurrently accessed: %w", id, core_errors.ErrNotFound)
 		}
 		return domain.User{}, fmt.Errorf("scan error:%w", err)
 	}
