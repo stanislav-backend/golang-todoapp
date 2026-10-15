@@ -11,10 +11,10 @@ import (
 	core_http_types "github.com/stanislav-backend/golang-todoapp/internal/core/transport/http/types"
 )
 
-type PatchTaskRequest struct{
-	Title       core_http_types.Nullable[string] `json:"title"`
-	Description core_http_types.Nullable[string] `json:"description"`
-	Completed   core_http_types.Nullable[bool]   `json:"completed"`
+type PatchTaskRequest struct {
+	Title       core_http_types.Nullable[string] `json:"title" swaggertype:"string" example:"Погулять с собакой"`
+	Description core_http_types.Nullable[string] `json:"description" swaggertype:"string" example:"null"`
+	Completed   core_http_types.Nullable[bool]   `json:"completed" swaggertype:"boolean"`
 }
 
 func (p *PatchTaskRequest) Validate() error {
@@ -48,6 +48,26 @@ func (p *PatchTaskRequest) Validate() error {
 
 type PatchTaskResponse TaskDTOResponse
 
+
+// PatchTask godoc
+// @Summary Обновить задачу
+// @Description Обновляет информацию об уже существующей в системе задаче
+// @Description ### Логика обновления полей (Three-state logic):
+// @Description 1. **Поле не передано**: `description` игнорируется, значение в БД не меняется
+// @Description 2. **Явно передано значение**: `"description": "Утром в 06:30 выйти на прогулку с Бобиком"`
+// @Description 3. **Явно передан null**: `"description": null` – очищает поле в БД (set to NULL)
+// @Description Ограничения: `title` и `completed` не могут быть выставлены как null
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path int true "ID изменяемой задачи"
+// @Param request body PatchTaskRequest true "PatchTask тело запроса"
+// @Success 200 {object} PatchTaskResponse "Успешно изменённая задача"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 404 {object} core_http_response.ErrorResponse "Task not found"
+// @Failure 409 {object} core_http_response.ErrorResponse "Conflict"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /tasks/{id} [patch]
 func (h *TasksHTTPHandler) PatchTask(rw http.ResponseWriter, r *http.Request){
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
