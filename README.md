@@ -27,3 +27,10 @@
 *   Go 1.21+
 *   Docker и Docker Compose
 *   Установленный `make`
+
+### Запуск локально
+
+1. Клонируйте репозиторий:
+   ```bash
+   git clone https://github.com/stanislav-backend/golang-todoapp.git
+   cd golang-todoapp
